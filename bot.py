@@ -295,11 +295,16 @@ def main():
     @bot.command(pass_context=True, name='signup', help = 'Signup for your team for open tourneys.')
     async def signup(ctx, *, message ):
 
+        if message == "":
+            await ctx.send("You are missing required parameters. The correct parameters/order = **<tournament name>, <player1>, <player2>, <player3>, <player4>, <player5>, <team name>**. \nPlease try again.")
+
+
+
         try:
 
             tourney_name, player1, player2, player3, player4, player5, team_name = message.split(",")
         except:
-            await ctx.send("You are missing a required parameter. The correct parameters/order = **<tournament name>, <player1>, <player2>, <player3>, <player4>, <player5>, <team name>**. \nPlease try again.")
+            await ctx.send("You are missing required parameters. The correct parameters/order = **<tournament name>, <player1>, <player2>, <player3>, <player4>, <player5>, <team name>**. \nPlease try again.")
             return
 
         conn = connect_db()
