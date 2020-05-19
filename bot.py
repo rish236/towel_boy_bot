@@ -177,6 +177,59 @@ def main():
     async def opgg_team_error(ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You forgot to enter a team name. Please try again.")
+
+
+    @bot.command(pass_context=True, name='createtourney', help = 'Allows admin to create a tourney')
+    @has_permissions(administrator=True)
+    async def create_tourney(ctx, *, message):
+        conn = connect_db()
+
+        try:
+            name, date, rp, elim = message.split(",")
+        except:
+            await ctx.send("You are missing a required parameter.")
+            return
+
+        with conn:
+            cursor = conn.cursor()
+            print("creating table")
+            query = '''CREATE TABLE IF NOT EXISTS tournament_details (name VARCHAR(25), date VARCHAR(20), rp VARCHAR(5), type VARCHAR(20) primary key(name))'''
+            cursor.execute(query)
+
+            query2 = "INSERT INTO tournament_details (name, date, rp, type) VALUES (%s, %s, %s, %s)"
+            tup = (name, date.lstrip(' '), rp.lstrip(' '), elim.lstrip(' '))
+            cursor.execute(query2, tup)
+            await ctx.send("{} successfully created!".format(name))
+        
+
+    @bot.command(pass_context=True, name='tournamentdetails', help = 'Allows admin to create a tourney')
+    async def tournament_details(ctx, *, message):
+         conn = connect_db()
+          with conn:
+            cursor = conn.cursor()
+            query = "SELECT date, rp, type FROM tournament_details where name = '{}".format(message)
+
+            try:
+
+                cursor.execute(query)
+                resp = cursor.fetchall()
+                name = resp[0][0]
+                date = resp[0][1]
+                prize = resp[0][2]
+                elim = resp[0][3]
+            except:
+                await ctx.send("{} does not exist, please try again.".format(message))
+                return
+
+            await ctx.send("**{}** is on **{}**. The total prize for the winning team will be **${}**, and is **{}**. ".format(name, date, prize, elim))
+
+
+
+    @tournament_details.error
+    async def tournament_details_error(ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("You forgot to enter a tourney name. Please try again.")
+
     
     @bot.command(pass_context=True, name='opensignups', help = 'Allows admin to open signups for a tourney.')
     @has_permissions(administrator=True)
@@ -349,7 +402,7 @@ def main():
     async def edit(ctx, *, message):
         conn = connect_db()
         with conn:
-            #when we run multiple tournaments in a week, need to add tourney_name as a parameter and add "and" to the where clause
+            #when we run multiple tournaments in a week, need to add tourney_name as a parameter and add "and" to the where clause may have to change rows[0]
             cursor = conn.cursor()
             query = "SELECT disc_user, player1, player2, player3, player4, player5 FROM teams WHERE team_name = '{}'".format(message)
             try:
