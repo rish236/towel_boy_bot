@@ -193,7 +193,7 @@ def main():
         with conn:
             cursor = conn.cursor()
             print("creating table")
-            query = "CREATE TABLE IF NOT EXISTS tournament_details (tournament_name VARCHAR(25), date VARCHAR(20), rp VARCHAR(5), type VARCHAR(20), primary key(name))"
+            query = "CREATE TABLE IF NOT EXISTS tournament_details (tournament_name VARCHAR(25), date VARCHAR(20), rp VARCHAR(5), type VARCHAR(20), primary key(tournament_name))"
 
             cursor.execute(query)
 
