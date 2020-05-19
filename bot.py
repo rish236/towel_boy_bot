@@ -267,7 +267,7 @@ def main():
         x = datetime.date.today()
 
         friday = x + datetime.timedelta( (4-x.weekday()) % 7 )
-        await ctx.send("Signups for **{}** are now open from **{}** to **{} 11:59 PM EST**.".format(message, today, friday))
+        await ctx.send("Signups for **{}** are now open from **{}** to **{} 11:59 PM EST**. Please visit #towel-boy-help to see how to sign up for a tourney. If you have any questions or need help, please reach out to @rish.".format(message, today, friday))
 
 
   
