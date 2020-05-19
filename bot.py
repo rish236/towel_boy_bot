@@ -193,7 +193,7 @@ def main():
         with conn:
             cursor = conn.cursor()
             print("creating table")
-            query = '''CREATE TABLE IF NOT EXISTS tournament_details (name VARCHAR(25), date VARCHAR(20), rp VARCHAR(5), type VARCHAR(20) primary key(name))'''
+            query = '''CREATE TABLE IF NOT EXISTS tournament_details (tournament_name VARCHAR(25), date VARCHAR(20), rp VARCHAR(5), type VARCHAR(20) primary key(name))'''
             cursor.execute(query)
 
             query2 = "INSERT INTO tournament_details (name, date, rp, type) VALUES (%s, %s, %s, %s)"
@@ -207,7 +207,7 @@ def main():
         conn = connect_db()
         with conn:
             cursor = conn.cursor()
-            query = "SELECT date, rp, type FROM tournament_details where name = '{}".format(message)
+            query = "SELECT date, rp, type FROM tournament_details where tournament_name = '{}'".format(message)
 
             try:
 
