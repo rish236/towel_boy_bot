@@ -214,9 +214,9 @@ def main():
                 cursor.execute(query)
                 resp = cursor.fetchall()
                 print(resp)
-                date = resp[0][1]
-                prize = resp[0][2]
-                elim = resp[0][3]
+                date = resp[0][0]
+                prize = resp[0][1]
+                elim = resp[0][2]
             except:
                 await ctx.send("Tournament **{}** does not exist, please try again.".format(message))
                 return
