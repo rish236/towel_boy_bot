@@ -14,7 +14,7 @@ import os
 
 
 def connect_db():
-    conn = pymysql.connect(os.environ['host'], user=os.environ['user'],port=os.environ['port'],
+    conn = pymysql.connect(os.environ['host'], user=os.environ['user'],
                            passwd=os.environ['password'], db=os.environ['dbname'])
 
     conn.autocommit(True)
