@@ -442,7 +442,7 @@ def main():
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You forgot to enter a team name. Please try again.")
 
-    bot.run(config.token)
+    bot.run(token)
 
 
 if __name__ == "__main__":
