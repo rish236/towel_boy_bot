@@ -204,8 +204,8 @@ def main():
 
     @bot.command(pass_context=True, name='tournamentdetails', help = 'Allows admin to create a tourney')
     async def tournament_details(ctx, *, message):
-         conn = connect_db()
-          with conn:
+        conn = connect_db()
+        with conn:
             cursor = conn.cursor()
             query = "SELECT date, rp, type FROM tournament_details where name = '{}".format(message)
 
