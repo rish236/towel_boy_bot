@@ -1,3 +1,4 @@
+import config
 import pymysql
 import discord
 from discord.ext import commands
@@ -14,9 +15,7 @@ import os
 
 
 def connect_db():
-    conn = pymysql.connect(os.environ['host'], user=os.environ['user'],
-                           passwd=os.environ['password'], db=os.environ['dbname'])
-
+    conn = pymysql.connect(os.environ['host'], user=os.environ['user'], passwd=os.environ['password'], db=os.environ['dbname'])
     conn.autocommit(True)
     return conn
 
@@ -26,6 +25,7 @@ def main():
     
 
     token = os.environ['token']
+
 
 
     bot = commands.Bot(command_prefix='!')
@@ -46,8 +46,11 @@ def main():
 
 
     @bot.command(pass_context=True, name='opgg', help = 'Provides you with an opgg link for a given ign.')
-    async def opgg(ctx, user):
-        link = "https://na.op.gg/summoner/userName={}".format(user) 
+    async def opgg(ctx, *, message):
+
+        message = message.replace(" ", "+")
+
+        link = "https://na.op.gg/summoner/userName={}".format(message) 
         await ctx.send(link)
 
 
@@ -55,21 +58,23 @@ def main():
     
 
     @bot.command(pass_context=True, name='showteams', help = 'Shows the current teams signed up for a specific tourney.')
-    async def show_teams(ctx, tourney_name):
+    async def show_teams(ctx, *, message):
         conn = connect_db()
         msg = ""
 
         with conn:
             cursor = conn.cursor()
-            query = "SELECT team_name FROM teams WHERE tourney_name = '{}'".format(tourney_name)
+            query = "SELECT team_name FROM teams WHERE tourney_name = '{}'".format(message)
             cursor.execute(query)
             teams = cursor.fetchall()
+            if teams:
+                await ctx.send("Current teams signed up for **{}**:".format(message))
+                for i in teams:
+                    msg = msg + "\n" + i[0]
 
-            await ctx.send("Current teams signed up for **{}**:".format(tourney_name))
-            for i in teams:
-                msg = msg + "\n" + i[0]
-
-            await ctx.send(msg)
+                await ctx.send(msg)
+            else:
+                await ctx.send("No teams are currently signed up for **{}**.".format(message))
 
     @bot.command(pass_context=True, name='showopentourneys', help = 'Shows the current teams signed up for a specific tourney.')
     async def show_open_tourneys(ctx):
@@ -96,14 +101,13 @@ def main():
 
     @bot.command(pass_context=True, name='showteamsfinal', help = 'Shows the finalized list of teams signed up for a tourney')
     @has_permissions(administrator=True)
-
-    async def showteamsfinal(ctx, tourney_name):
+    async def showteamsfinal(ctx, *, message):
         conn = connect_db()
         msg = ""
 
         with conn:
             cursor = conn.cursor()
-            query = "SELECT team_name, player1, player2, player3, player4, player5 FROM teams WHERE tourney_name = '{}'".format(tourney_name)
+            query = "SELECT team_name, player1, player2, player3, player4, player5 FROM teams WHERE tourney_name = '{}'".format(message)
             cursor.execute(query)
             teams = cursor.fetchall()
 
@@ -121,12 +125,12 @@ def main():
     
 
     @bot.command(pass_context=True, name='showmembers', help = "Provides you with the IGNs for members registered on a team.")
-    async def show_members(ctx, team_name):
+    async def show_members(ctx, *, message):
         conn = connect_db()
 
         with conn:
             cursor = conn.cursor()
-            query = "SELECT player1, player2, player3, player4, player5 FROM teams WHERE team_name = '{}'".format(team_name)
+            query = "SELECT player1, player2, player3, player4, player5 FROM teams WHERE team_name = '{}'".format(message)
 
             try:
                 cursor.execute(query)
@@ -138,10 +142,10 @@ def main():
                 player4 = rows[0][3]
                 player5 = rows[0][4]
             except Exception as e:
-                await ctx.send("Team name **{}** does not exist in the database. Please try again.".format(team_name))
+                await ctx.send("Team name **{}** does not exist in the database. Please try again.".format(message))
             cursor.close()
 
-        await ctx.send("Here are the IGNs for team **{}**:\n{}\n{}\n{}\n{}\n{}".format(team_name, player1, player2, player3, player4, player5))
+        await ctx.send("Here are the IGNs for team **{}**:\n{}\n{}\n{}\n{}\n{}".format(message, player1, player2, player3, player4, player5))
 
     @show_members.error
     async def show_members_error(ctx, error):
@@ -151,12 +155,12 @@ def main():
     
 
     @bot.command(pass_context=True, name='opggteam', help = 'Provides you with opgg links for players in a team.')
-    async def opgg_team(ctx, team_name):
+    async def opgg_team(ctx, *, message):
         conn = connect_db()
 
         with conn:
             cursor = conn.cursor()
-            query = "SELECT player1, player2, player3, player4, player5 FROM teams WHERE team_name = '{}'".format(team_name)
+            query = "SELECT player1, player2, player3, player4, player5 FROM teams WHERE team_name = '{}'".format(message)
             cursor.execute(query)
             rows = cursor.fetchall()
 
@@ -168,7 +172,7 @@ def main():
             cursor.close()
 
         link = "https://na.op.gg/summoner/userName=" 
-        await ctx.send("Here are the opgg's for team **{}**:\n{}\n{}\n{}\n{}\n{}".format(team_name, link + player1, link + player2, link + player3, link + player4, link + player5))
+        await ctx.send("Here are the opgg's for team **{}**:\n{}\n{}\n{}\n{}\n{}".format(message, link + player1, link + player2, link + player3, link + player4, link + player5))
 
     @opgg_team.error
     async def opgg_team_error(ctx, error):
@@ -177,7 +181,7 @@ def main():
     
     @bot.command(pass_context=True, name='opensignups', help = 'Allows admin to open signups for a tourney.')
     @has_permissions(administrator=True)
-    async def open_signups(ctx, tourney_name):
+    async def open_signups(ctx, *, message):
         conn = connect_db()
 
         with conn:
@@ -193,7 +197,7 @@ def main():
 
 
             query3 = "INSERT INTO active_tourneys (tourney_name, active) VALUES (%s, %s)"
-            cursor.execute(query3, (tourney_name, 1))
+            cursor.execute(query3, (message, 1))
 
 
 
@@ -206,37 +210,45 @@ def main():
         x = datetime.date.today()
 
         friday = x + datetime.timedelta( (4-x.weekday()) % 7 )
-        await ctx.send("Signups for **{}** are now open from **{}** to **{} 11:59 PM EST**.".format(tourney_name, today, friday))
+        await ctx.send("Signups for **{}** are now open from **{}** to **{} 11:59 PM EST**.".format(message, today, friday))
 
 
   
 
 
 
-    @bot.command(pass_context=True, name='closesignups', help = 'Allows admin to open signups for a tourney.')
+    @bot.command(pass_context=True, name='closesignups', help = 'Allows admin to close signups for a tourney.')
     @has_permissions(administrator=True)
-    async def close_signups(ctx, tourney_name):
+    async def close_signups(ctx, *, message):
         conn = connect_db()
 
         with conn:
             cursor = conn.cursor()
             
-            query = "UPDATE active_tourneys SET active = 0 WHERE tourney_name = '{}'".format(tourney_name)
+            query = "UPDATE active_tourneys SET active = 0 WHERE tourney_name = '{}'".format(message)
             cursor.execute(query)
 
 
 
             cursor.close()
 
-        await ctx.send("Signups for **{}** are now closed.".format(tourney_name))
+        await ctx.send("Signups for **{}** are now closed.".format(message))
 
     
     @bot.command(pass_context=True, name='signup', help = 'Signup for your team for open tourneys.')
-    async def signup(ctx, tourney_name, player1, player2, player3, player4, player5, team_name):
+    async def signup(ctx, *, message ):
+
+        try:
+
+            tourney_name, player1, player2, player3, player4, player5, team_name = message.split(",")
+        except:
+            await ctx.send("You are missing a required parameter. The correct parameters/order = **<tournament name>, <player1>, <player2>, <player3>, <player4>, <player5>, <team name>**. \nPlease try again.")
+            return
+
         conn = connect_db()
         with conn:
             cursor = conn.cursor()
-            query = "SELECT active FROM active_tourneys WHERE tourney_name = '{}'".format(tourney_name)
+            query = "SELECT active FROM active_tourneys WHERE tourney_name = '{}'".format(tourney_name.lstrip(' '))
            
             try:
                 cursor.execute(query)
@@ -245,7 +257,7 @@ def main():
             except Exception as e:
                 if 'NoneType' in str(e):
 
-                    await ctx.send("Unable to signup team because **{}** does not exist. Please try again with the correct tourney name.".format(tourney_name))
+                    await ctx.send("Unable to signup team because **{}** does not exist. Please try again with the correct tourney name.".format(tourney_name.lstrip(' ')))
                     return
 
 
@@ -259,7 +271,7 @@ def main():
                 ts = time.time()
                 date_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
                 disc_user = str(ctx.message.author)
-                tup = (disc_user, date_time, team_name, player1, player2, player3, player4, player5, tourney_name)
+                tup = (disc_user, date_time, team_name.lstrip(' '), player1.lstrip(' '), player2.lstrip(' '), player3.lstrip(' '), player4.lstrip(' '), player5.lstrip(' '), tourney_name.lstrip(' '))
 
 
                 #when we run multple tournaments at the same time, need to make it so team_name is not a primary key. need to validate that team_name and tourney_name are not the same instead
@@ -276,18 +288,25 @@ def main():
                 cursor.close()
                 
 
-                await ctx.send("Successfully signed up **{}**!".format(team_name))
+                await ctx.send("Successfully signed up **{}**!".format(team_name.lstrip(' ')))
             else:
-                await ctx.send("**{}** signups are closed at this time. Please contact @rish or @TimeStoned if you believe this is an error.".format(tourney_name))
+                await ctx.send("**{}** signups are closed at this time. Please contact @rish or @TimeStoned if you believe this is an error.".format(tourney_name.lstrip(' ')))
 
-    @signup.error
-    async def signup_error(ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You are missing a required parameter. The correct parameters/order = **<tournament name> <player1> <player2> <player3> <player4> <player5> <team name>**. \nPlease try again.")
+    # @signup.error
+    # async def signup_error(ctx, error):
+    #     if isinstance(error, commands.MissingRequiredArgument):
+    #         await ctx.send("You are missing a required parameter. The correct parameters/order = **<tournament name> <player1> <player2> <player3> <player4> <player5> <team name>**. \nPlease try again.")
 
 
     @bot.command(pass_context=True, name='removeteam', help = 'Remove a team from a specific tourney.')
-    async def remove_team(ctx, team_name, tourney_name):
+    async def remove_team(ctx, *, message ):
+
+        try:
+
+            team_name, tourney_name = message.split(",")
+        except:
+            await ctx.send("You are missing a required parameter. The correct parameters/order = **<team name> <tournament name>**")
+
         conn = connect_db()
 
         current_disc_user = str(ctx.author)
@@ -297,7 +316,7 @@ def main():
         with conn:
 
             cursor = conn.cursor()
-            query = "SELECT disc_user FROM teams WHERE team_name = '{}' and tourney_name = '{}'".format(team_name, tourney_name)
+            query = "SELECT disc_user FROM teams WHERE team_name = '{}' and tourney_name = '{}'".format(team_name.lstrip(' '), tourney_name.lstrip(' '))
             cursor.execute(query)
 
             try:
@@ -308,10 +327,10 @@ def main():
 
             if disc_user == current_disc_user:
                 
-                query2 = "DELETE FROM teams WHERE team_name = '{}' and tourney_name = '{}'".format(team_name, tourney_name)
+                query2 = "DELETE FROM teams WHERE team_name = '{}' and tourney_name = '{}'".format(team_name.lstrip(' '), tourney_name.lstrip(' '))
                 print(query2)
                 cursor.execute(query2)
-                await ctx.send("Team **{}** was successfully removed from **{}**".format(team_name, tourney_name))
+                await ctx.send("Team **{}** was successfully removed from **{}**".format(team_name.lstrip(' '), tourney_name.lstrip(' ')))
                    
 
             else:
@@ -321,19 +340,19 @@ def main():
 
 
 
-    @remove_team.error
-    async def remove_team_error(ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("You are missing a required parameter. The correct parameters/order = **<team name> <tournament name>**")
+    # @remove_team.error
+    # async def remove_team_error(ctx, error):
+    #     if isinstance(error, commands.MissingRequiredArgument):
+    #         await ctx.send("You are missing a required parameter. The correct parameters/order = **<team name> <tournament name>**")
 
 
     @bot.command(pass_context=True, name='edit', help = 'Edit/replace members on your team.')
-    async def edit(ctx, team_name):
+    async def edit(ctx, *, message):
         conn = connect_db()
         with conn:
             #when we run multiple tournaments in a week, need to add tourney_name as a parameter and add "and" to the where clause
             cursor = conn.cursor()
-            query = "SELECT disc_user, player1, player2, player3, player4, player5 FROM teams WHERE team_name = '{}'".format(team_name)
+            query = "SELECT disc_user, player1, player2, player3, player4, player5 FROM teams WHERE team_name = '{}'".format(message)
             try:
                 cursor.execute(query)
                 rows = cursor.fetchall()
@@ -354,8 +373,8 @@ def main():
 
 
             if disc_user == current_disc_user:
-                await ctx.send('''Here are the members of **{}**: \n1) {}\n2) {}\n3) {}\n4) {}\n5) {}\n\nPlease choose the number corresponding to the player you want to edit and enter the new IGN. For example: 1 newign. 
-                '''.format(team_name, player1, player2, player3, player4, player5))
+                await ctx.send('''Here are the members of **{}**: \n1) {}\n2) {}\n3) {}\n4) {}\n5) {}\n\nPlease choose the number corresponding to the player you want to edit and enter the new IGN. For example: 1, newign. 
+                '''.format(message, player1, player2, player3, player4, player5))
 
                 def check(m):
                     return m.author == ctx.author and m.channel == ctx.channel
@@ -364,37 +383,38 @@ def main():
                 try:
 
                     msg = await bot.wait_for('message', check=check, timeout=30.0)
-                    resp = msg.content.split(" ")
+                    resp = msg.content.split(",")
                     
                 except asyncio.TimeoutError:
                     await ctx.send('\nYou took too long, try again.')
                 
 
                 print(resp[0])
+                resp[1] = resp[1].lstrip(' ')
                 print(resp[1])
                 if int(resp[0]) == 1:
-                    query = "UPDATE teams SET player1 = '{}' WHERE team_name = '{}'".format(resp[1], team_name)
+                    query = "UPDATE teams SET player1 = '{}' WHERE team_name = '{}'".format(resp[1], message)
                     cursor.execute(query)
                     
                     await ctx.send("Successfully replaced **{}** with **{}**!".format(player1, resp[1]))
                     return
 
                 if int(resp[0]) == 2:
-                    query = "UPDATE teams SET player2 = '{}' WHERE team_name = '{}'".format(resp[1], team_name)
+                    query = "UPDATE teams SET player2 = '{}' WHERE team_name = '{}'".format(resp[1], message)
                     cursor.execute(query)
 
                     await ctx.send("Successfully replaced **{}** with **{}**!".format(player2, resp[1]))
                     return
 
                 if int(resp[0]) == 3: 
-                    query = "UPDATE teams SET player3 = '{}' WHERE team_name = '{}'".format(resp[1], team_name)
+                    query = "UPDATE teams SET player3 = '{}' WHERE team_name = '{}'".format(resp[1], message)
                     cursor.execute(query)
 
                     await ctx.send("Successfully replaced **{}** with **{}**!".format(player3, resp[1]))
                     return
 
                 if int(resp[0]) == 4:
-                    query = "UPDATE teams SET player4 = '{}' WHERE team_name = '{}'".format(resp[1], team_name)
+                    query = "UPDATE teams SET player4 = '{}' WHERE team_name = '{}'".format(resp[1], message)
                     cursor.execute(query)
 
                     await ctx.send("Successfully replaced **{}** with **{}**!".format(player4, resp[1]))
@@ -402,7 +422,7 @@ def main():
 
                 
                 if int(resp[0]) == 5:
-                    query = "UPDATE teams SET player5 = '{}' WHERE team_name = '{}'".format(resp[1], team_name)
+                    query = "UPDATE teams SET player5 = '{}' WHERE team_name = '{}'".format(resp[1], message)
                     cursor.execute(query)
 
                     await ctx.send("Successfully replaced **{}** with **{}**!".format(player5, resp[1]))
@@ -423,7 +443,7 @@ def main():
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You forgot to enter a team name. Please try again.")
 
-    bot.run(token)
+    bot.run(config.token)
 
 
 if __name__ == "__main__":
