@@ -197,7 +197,7 @@ def main():
 
             cursor.execute(query)
 
-            query2 = "INSERT INTO tournament_details (name, date, rp, type) VALUES (%s, %s, %s, %s)"
+            query2 = "INSERT INTO tournament_details (tournament_name, date, rp, type) VALUES (%s, %s, %s, %s)"
             tup = (name, date.lstrip(' '), rp.lstrip(' '), elim.lstrip(' '))
             cursor.execute(query2, tup)
             await ctx.send("{} successfully created!".format(name))
