@@ -304,7 +304,7 @@ def main():
 
             team_name, tourney_name = message.split(",")
         except:
-            await ctx.send("You are missing a required parameter. The correct parameters/order = **<team name> <tournament name>**")
+            await ctx.send("You are missing a required parameter. The correct parameters/order = **<team name>, <tournament name>**")
 
         conn = connect_db()
 
