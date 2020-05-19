@@ -1,4 +1,3 @@
-import config
 import pymysql
 import discord
 from discord.ext import commands
