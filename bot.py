@@ -75,7 +75,7 @@ def main():
             else:
                 await ctx.send("No teams are currently signed up for **{}**.".format(message))
 
-    @bot.command(pass_context=True, name='showopentourneys', help = 'Shows the current teams signed up for a specific tourney.')
+    @bot.command(pass_context=True, name='showopentourneys', help = 'Shows the tournaments open for registration.')
     async def show_open_tourneys(ctx):
         conn = connect_db()
         msg = ""
