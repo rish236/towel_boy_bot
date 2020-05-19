@@ -214,7 +214,6 @@ def main():
                 cursor.execute(query)
                 resp = cursor.fetchall()
                 print(resp)
-                name = resp[0][0]
                 date = resp[0][1]
                 prize = resp[0][2]
                 elim = resp[0][3]
@@ -222,7 +221,7 @@ def main():
                 await ctx.send("Tournament **{}** does not exist, please try again.".format(message))
                 return
 
-            await ctx.send("**{}** is on **{}**. The total prize for the winning team will be **${}**, and is **{}**. ".format(name, date, prize, elim))
+            await ctx.send("**{}** is on **{}**. The total prize for the winning team will be **${}**, and is **{}**. ".format(message, date, prize, elim))
 
 
 
