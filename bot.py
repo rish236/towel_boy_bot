@@ -178,6 +178,11 @@ def main():
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You forgot to enter a team name. Please try again.")
 
+    @opgg.error
+    async def opgg_error(ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("You forgot to enter an ign. Please try again.")
+
 
     @bot.command(pass_context=True, name='createtourney', help = 'Allows admin to create a tourney')
     @has_permissions(administrator=True)
