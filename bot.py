@@ -25,7 +25,7 @@ def main():
 
     
 
-    token = config.token
+    token = os.environ['token']
 
 
     bot = commands.Bot(command_prefix='!')
@@ -423,7 +423,7 @@ def main():
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You forgot to enter a team name. Please try again.")
 
-    bot.run(os.environ['token'])
+    bot.run(token)
 
 
 if __name__ == "__main__":
