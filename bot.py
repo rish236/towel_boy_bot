@@ -154,6 +154,9 @@ def main():
     
 
     @bot.command(pass_context=True, name='opggteam', help = 'Provides you with opgg links for players in a team.')
+    
+    
+    
     async def opgg_team(ctx, *, message):
         conn = connect_db()
 
@@ -163,12 +166,14 @@ def main():
             cursor.execute(query)
             rows = cursor.fetchall()
 
-            player1 = rows[0][0]
-            player2 = rows[0][1]
-            player3 = rows[0][2]
-            player4 = rows[0][3]
-            player5 = rows[0][4]
+            player1 = rows[0][0].replace(" ", "+")
+            player2 = rows[0][1].replace(" ", "+")
+            player3 = rows[0][2].replace(" ", "+")
+            player4 = rows[0][3].replace(" ", "+")
+            player5 = rows[0][4].replace(" ", "+")
             cursor.close()
+
+            
 
         link = "https://na.op.gg/summoner/userName=" 
         await ctx.send("Here are the opgg's for team **{}**:\n{}\n{}\n{}\n{}\n{}".format(message, link + player1, link + player2, link + player3, link + player4, link + player5))
