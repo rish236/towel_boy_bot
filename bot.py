@@ -166,17 +166,17 @@ def main():
             cursor.execute(query)
             rows = cursor.fetchall()
 
-            player1 = rows[0][0].replace(" ", "+")
-            player2 = rows[0][1].replace(" ", "+")
-            player3 = rows[0][2].replace(" ", "+")
-            player4 = rows[0][3].replace(" ", "+")
-            player5 = rows[0][4].replace(" ", "+")
+            player1 = rows[0][0].replace(" ", "")
+            player2 = rows[0][1].replace(" ", "")
+            player3 = rows[0][2].replace(" ", "")
+            player4 = rows[0][3].replace(" ", "")
+            player5 = rows[0][4].replace(" ", "")
             cursor.close()
 
             
 
-        link = "https://na.op.gg/summoner/userName=" 
-        await ctx.send("Here are the opgg's for team **{}**:\n{}\n{}\n{}\n{}\n{}".format(message, link + player1, link + player2, link + player3, link + player4, link + player5))
+        link = "https://na.op.gg/multi/query={}%2C{}%2C{}%2C{}%2C{}".format(player1, player2, player3, player4, player5) 
+        await ctx.send("Here is the opgg for team **{}**:\n{}".format(message, link))
 
     @opgg_team.error
     async def opgg_team_error(ctx, error):
