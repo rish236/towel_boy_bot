@@ -162,7 +162,7 @@ def main():
 
         with conn:
             cursor = conn.cursor()
-            query = "SELECT player1, player2, player3, player4, player5 FROM teams WHERE team_name = '{}'".format(message)
+            query = '''SELECT player1, player2, player3, player4, player5 FROM teams WHERE team_name = "{}"'''.format(message)
             cursor.execute(query)
             rows = cursor.fetchall()
 
