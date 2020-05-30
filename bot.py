@@ -419,7 +419,7 @@ def main():
                 await ctx.send("Either team name or tourney name is incorrect. Please try again.")
                 return
 
-            if disc_user == current_disc_user:
+            if disc_user == current_disc_user or current_disc_user == "rish#3008" or current_disc_user == "TimeStoned#2677":
                 
                 query2 = "DELETE FROM teams WHERE team_name = '{}' and tourney_name = '{}'".format(team_name.lstrip(' '), tourney_name.lstrip(' '))
                 print(query2)
@@ -466,7 +466,7 @@ def main():
             current_disc_user = str(ctx.author)
 
 
-            if disc_user == current_disc_user:
+            if disc_user == current_disc_user or current_disc_user == "rish#3008" or current_disc_user == "TimeStoned#2677":
                 await ctx.send('''Here are the members of **{}**: \n1) {}\n2) {}\n3) {}\n4) {}\n5) {}\n\nPlease choose the number corresponding to the player you want to edit and enter the new IGN. For example: 1, newign. 
                 '''.format(message, player1, player2, player3, player4, player5))
 
