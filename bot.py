@@ -148,7 +148,7 @@ def main():
                 await ctx.send("Team name **{}** does not exist in the database. Please try again.".format(message))
             cursor.close()
 
-        await ctx.send("Here are the IGNs for team **{}**:\n{}\n{}\n{}\n{}\n{}".format(message, player1, player2, player3, player4, player5))
+        await ctx.send("Here are the IGNs for team **{}**:\n{}\n{}\n{}\n{}\n{}".format(team_name, player1, player2, player3, player4, player5))
 
     @show_members.error
     async def show_members_error(ctx, error):
@@ -184,7 +184,7 @@ def main():
             
 
         link = "https://na.op.gg/multi/query={}%2C{}%2C{}%2C{}%2C{}".format(player1, player2, player3, player4, player5) 
-        await ctx.send("Here is the opgg for team **{}**:\n{}".format(message, link))
+        await ctx.send("Here is the opgg for team **{}**:\n{}".format(team_name, link))
 
     @opgg_team.error
     async def opgg_team_error(ctx, error):
