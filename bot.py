@@ -229,7 +229,7 @@ def main():
 
             try:
                 cursor.execute(query)
-                resp = cursor.fetchall()
+                resp = cursor.fetchall()[0][0]
                 print(resp)
                 
             except:
