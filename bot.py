@@ -126,10 +126,14 @@ def main():
     @bot.command(pass_context=True, name='showmembers', help = "Provides you with the IGNs for members registered on a team.")
     async def show_members(ctx, *, message):
         conn = connect_db()
+        try:
+            team_name, tourney_name = message.split(",")
+        except:
+            await ctx.send("You forgot to enter a team or tourney name, please try again.")
 
         with conn:
             cursor = conn.cursor()
-            query = '''SELECT player1, player2, player3, player4, player5 FROM teams WHERE team_name = "{}"'''.format(message)
+            query = '''SELECT player1, player2, player3, player4, player5 FROM teams WHERE team_name = "{}" and tourney_name = "{}"'''.format(team_name, tourney_name.lstrip(' '))
 
             try:
                 cursor.execute(query)
@@ -159,10 +163,14 @@ def main():
     
     async def opgg_team(ctx, *, message):
         conn = connect_db()
+        try:
+            team_name, tourney_name = message.split(',')
+        except:
+            await ctx.send("You forgot to enter a team or tourney name, please try again.")
 
         with conn:
             cursor = conn.cursor()
-            query = '''SELECT player1, player2, player3, player4, player5 FROM teams WHERE team_name = "{}"'''.format(message)
+            query = '''SELECT player1, player2, player3, player4, player5 FROM teams WHERE team_name = "{}" and tourney_name = "{}"'''.format(team_name, tourney_name.lstrip(' '))
             cursor.execute(query)
             rows = cursor.fetchall()
 
@@ -373,7 +381,7 @@ def main():
                     cursor.execute(query2, tup)
 
             
-                except pymysql.err.IntegrityError:
+                except:
                     await ctx.send("Team name already exists. Please use a different name, or use the edit command to edit your current team.")
                     return
             
@@ -421,7 +429,7 @@ def main():
 
             if disc_user == current_disc_user or current_disc_user == "rish#3008" or current_disc_user == "TimeStoned#2677":
                 
-                query2 = "DELETE FROM teams WHERE team_name = '{}' and tourney_name = '{}'".format(team_name.lstrip(' '), tourney_name.lstrip(' '))
+                query2 = '''DELETE FROM teams WHERE team_name = "{}" and tourney_name = "{}"'''.format(team_name.lstrip(' '), tourney_name.lstrip(' '))
                 print(query2)
                 cursor.execute(query2)
                 await ctx.send("Team **{}** was successfully removed from **{}**".format(team_name.lstrip(' '), tourney_name.lstrip(' ')))
@@ -443,10 +451,15 @@ def main():
     @bot.command(pass_context=True, name='edit', help = 'Edit/replace members on your team.')
     async def edit(ctx, *, message):
         conn = connect_db()
+
+        try:
+            team_name, tourney_name = message.split(",")
+        except:
+            await ctx.send("You forgot a team or tournament name. Please try again.")
         with conn:
             #when we run multiple tournaments in a week, need to add tourney_name as a parameter and add "and" to the where clause may have to change rows[0]
             cursor = conn.cursor()
-            query = "SELECT disc_user, player1, player2, player3, player4, player5 FROM teams WHERE team_name = '{}'".format(message)
+            query = '''SELECT disc_user, player1, player2, player3, player4, player5 FROM teams WHERE team_name = "{}" and tourney_name = "{}"'''.format(team_name, tourney_name.lstrip(' '))
             try:
                 cursor.execute(query)
                 rows = cursor.fetchall()
