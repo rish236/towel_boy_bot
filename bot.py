@@ -211,6 +211,32 @@ def main():
             tup = (name, date.lstrip(' '), rp.lstrip(' '), elim.lstrip(' '))
             cursor.execute(query2, tup)
             await ctx.send("{} successfully created!".format(name))
+
+
+    @bot.command(pass_context=True, name='showowner', help = 'Shows owner of a team')
+    async def show_owner(ctx, *, message):
+        conn = connect_db()
+        try:
+
+            team_name, tourney_name = message.split(",")
+        except:
+            await ctx.send("You forgot to enter a team or tournament name. Please try again.")
+            return
+
+        with conn:
+            cursor = conn.cursor()
+            query = "SELECT disc_user FROM teams where team_name = '{}' and tourney_name = '{}'".format(team_name, tourney_name)
+
+            try:
+                cursor.execute(query)
+                resp = cursor.fetchall()
+                print(resp)
+                
+            except:
+                await ctx.send("Unable to find an owner for team **{}** in tournament **{}**, please try again.".format(team_name, tourney_name))
+                return
+
+            await ctx.send("The owner for team **{}** is disc user **{}**.".format(team_name, resp))
         
 
     @bot.command(pass_context=True, name='tournamentdetails', help = 'Allows admin to create a tourney')
