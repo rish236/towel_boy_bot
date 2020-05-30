@@ -230,17 +230,14 @@ def main():
             try:
                 cursor.execute(query)
                 resp = cursor.fetchone()
-                print(resp)
-                print(resp[0])
-                print(resp[0][0])
-                print(resp[0][1])
+            
 
                 
             except:
                 await ctx.send("Unable to find an owner for team **{}** in tournament **{}**, please try again.".format(team_name, tourney_name))
                 return
 
-            await ctx.send("The owner for team **{}** is disc user **{}**.".format(team_name, resp))
+            await ctx.send("The owner for team **{}** is disc user **{}**.".format(team_name, resp[0]))
         
 
     @bot.command(pass_context=True, name='tournamentdetails', help = 'Allows admin to create a tourney')
