@@ -225,12 +225,16 @@ def main():
 
         with conn:
             cursor = conn.cursor()
-            query = "SELECT disc_user FROM teams where team_name = '{}' and tourney_name = '{}'".format(team_name, tourney_name)
+            query = '''SELECT disc_user FROM teams where team_name = "{}" and tourney_name = "{}"'''.format(team_name, tourney_name)
 
             try:
                 cursor.execute(query)
-                resp = cursor.fetchall()[0][0]
+                resp = cursor.fetchone()
                 print(resp)
+                print(resp[0])
+                print(resp[0][0])
+                print(resp[0][1])
+
                 
             except:
                 await ctx.send("Unable to find an owner for team **{}** in tournament **{}**, please try again.".format(team_name, tourney_name))
