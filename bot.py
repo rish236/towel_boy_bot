@@ -225,7 +225,7 @@ def main():
 
         with conn:
             cursor = conn.cursor()
-            query = '''SELECT disc_user FROM teams where team_name = "{}" and tourney_name = "{}"'''.format(team_name, tourney_name)
+            query = '''SELECT disc_user FROM teams where team_name = "{}" and tourney_name = "{}"'''.format(team_name, tourney_name.lstrip(' '))
 
             try:
                 cursor.execute(query)
