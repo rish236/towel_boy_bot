@@ -646,7 +646,7 @@ def main():
             if players:
                 await ctx.send("Current solo players signed up for **{}**:".format(message))
                 for i in players:
-                    msg = msg + "\n" + i[0]
+                    msg = msg + "\n" + "IGN: " + i[0] + "Primary role: " + i[1] + "Secondary role: " + i[2] + "Rank: " + i[3]
 
                 await ctx.send(msg)
             else:
