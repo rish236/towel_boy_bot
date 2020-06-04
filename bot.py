@@ -228,7 +228,7 @@ def main():
 
             team_name, tourney_name = message.split(",")
         except:
-            await ctx.send("You forgot to enter a team or tournament name. Please try again.")
+            await ctx.send("You forgot to enter a team or tournament name, or a comma between the two. Please try again.")
             return
 
         with conn:
@@ -337,8 +337,7 @@ def main():
 
         if message == "":
             await ctx.send("You are missing required parameters. The correct parameters/order = **<tournament name>, <player1>, <player2>, <player3>, <player4>, <player5>, <team name>**. \nPlease try again.")
-
-
+            return
 
         try:
 
@@ -350,6 +349,13 @@ def main():
         conn = connect_db()
         with conn:
             cursor = conn.cursor()
+
+            # q = "SELECT ign from solo_signups WHERE tourney_name - '{}'".format(tourney_name.lstrip(' '))
+            # cursor.execute(q)
+            # igns = cursor.fetchall()[0]
+
+            
+
             query = "SELECT active FROM active_tourneys WHERE tourney_name = '{}'".format(tourney_name.lstrip(' '))
            
             try:
@@ -549,6 +555,109 @@ def main():
     async def edit_error(ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("You forgot to enter a team name. Please try again.")
+
+    @bot.command(pass_context=True, name='signupsolo', help = 'Signup for your team for open tourneys.')
+    async def signup_solo(ctx, *, message ):
+
+        if message == "":
+            await ctx.send("You are missing required parameters. The correct parameters/order = **<tournament name>, <IGN>, <primary role>, <secondary role>, <solo/duo rank>**. \nPlease try again.")
+            return
+
+
+        try:
+
+            tourney_name, ign, primary, secondary, rank = message.split(",")
+        except:
+            await ctx.send("You are missing required parameters. The correct parameters/order = **<tournament name>, <IGN>, <primary role>, <secondary role>, <solo/duo rank>**. \nPlease try again.")
+            return
+
+        conn = connect_db()
+        with conn:
+            cursor = conn.cursor()
+
+            q = "CREATE TABLE IF NOT EXISTS solo_signups (disc_user VARCHAR(75), date VARCHAR(20), tourney_name VARCHAR(25), ign VARCHAR(75), primary_role VARCHAR(25), secondary_role (25), rank VARCHAR(25), picked TINYINT(1)"
+            cursor.execute(q)
+
+            query = "SELECT active FROM active_tourneys WHERE tourney_name = '{}'".format(tourney_name.lstrip(' '))
+           
+            try:
+                cursor.execute(query)
+                is_active = cursor.fetchone()[0]
+
+            except Exception as e:
+                if 'NoneType' in str(e):
+
+                    await ctx.send("Unable to signup team because **{}** does not exist. Please try again with the correct tourney name.".format(tourney_name.lstrip(' ')))
+                    return
+
+
+            print(is_active)
+
+            if is_active ==1:
+
+         
+
+                query2 = "INSERT INTO solo_signups (disc_user, date, ign, primary_role, secondary_role, rank, tourney_name) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+                ts = time.time()
+                date_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+                disc_user = str(ctx.message.author)
+                tup = (disc_user, date_time, ign.lstrip(' '), primary_role.lstrip(' '), secondary_role.lstrip(' '), rank.lstrip(' '), tourney_name.lstrip(' '))
+
+
+                #when we run multple tournaments at the same time, need to make it so team_name is not a primary key. need to validate that team_name and tourney_name are not the same instead
+                try:
+                    cursor.execute(query2, tup)
+
+            
+                except:
+                    await ctx.send("Unable to signup **{}** please try again, or contact @rish or @Timestoned for help.")
+                    return
+            
+                print("finished")
+
+                cursor.close()
+                
+
+                await ctx.send("Successfully signed up **{}** as a solo player!".format(ign.lstrip(' ')))
+            else:
+                await ctx.send("**{}** signups are closed at this time. Please contact @rish or @TimeStoned if you believe this is an error.".format(tourney_name.lstrip(' ')))
+
+
+
+
+
+
+
+
+
+    @bot.command(pass_context=True, name='showfreeagents', help = 'Shows the current teams signed up for a specific tourney.')
+    async def show_free_agents(ctx, *, message):
+        conn = connect_db()
+        msg = ""
+
+        with conn:
+            cursor = conn.cursor()
+             q = "SELECT ign from solo_signups WHERE tourney_name - '{}'".format(tourney_name.lstrip(' '))
+            cursor.execute(q)
+            igns = cursor.fetchall()[0]
+
+            print(igns)
+
+
+            # query = "SELECT ign, primary_role, secondary_role, rank FROM solo_signups WHERE tourney_name = '{}'".format(message)
+            # cursor.execute(query)
+            # players = cursor.fetchall()
+            # if teams:
+            #     await ctx.send("Current teams signed up for **{}**:".format(message))
+            #     for i in teams:
+            #         msg = msg + "\n" + i[0]
+
+            #     await ctx.send(msg)
+            # else:
+            #     await ctx.send("No teams are currently signed up for **{}**.".format(message)
+
+
+
 
     bot.run(token)
 
