@@ -559,7 +559,7 @@ def main():
     @bot.command(pass_context=True, name='signupsolo', help = 'Signup for your team for open tourneys.')
     async def signup_solo(ctx, *, message ):
 
-        if message == "":
+        if message is None "":
             await ctx.send("You are missing required parameters. The correct parameters/order = **<tournament name>, <IGN>, <primary role>, <secondary role>, <solo/duo rank>**. \nPlease try again.")
             return
 
@@ -575,7 +575,7 @@ def main():
         with conn:
             cursor = conn.cursor()
 
-            q = '''CREATE TABLE IF NOT EXISTS solo_signups (disc_user VARCHAR(75), date VARCHAR(20), tourney_name VARCHAR(25), ign VARCHAR(75), primary_role VARCHAR(25), secondary_role (25), rank VARCHAR(25), picked TINYINT(1))'''
+            q = '''CREATE TABLE IF NOT EXISTS solo_signups (disc_user VARCHAR(75), date VARCHAR(20), tourney_name VARCHAR(25), ign VARCHAR(75), primary_role VARCHAR(25), secondary_role VARCHAR(25), rank VARCHAR(25), picked TINYINT(1))'''
             cursor.execute(q)
 
             query = "SELECT active FROM active_tourneys WHERE tourney_name = '{}'".format(tourney_name.lstrip(' '))
