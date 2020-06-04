@@ -639,7 +639,7 @@ def main():
             cursor = conn.cursor()
             q = "SELECT ign from solo_signups WHERE tourney_name - '{}'".format(tourney_name.lstrip(' '))
             cursor.execute(q)
-            igns = cursor.fetchall()[0]
+            igns = cursor.fetchall()
 
             print(igns)
 
