@@ -601,7 +601,7 @@ def main():
                 ts = time.time()
                 date_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
                 disc_user = str(ctx.message.author)
-                tup = (disc_user, date_time, ign.lstrip(' '), primary_role.lstrip(' '), secondary_role.lstrip(' '), rank.lstrip(' '), tourney_name.lstrip(' '))
+                tup = (disc_user, date_time, ign.lstrip(' '), primary.lstrip(' '), secondary.lstrip(' '), rank.lstrip(' '), tourney_name.lstrip(' '))
 
 
                 #when we run multple tournaments at the same time, need to make it so team_name is not a primary key. need to validate that team_name and tourney_name are not the same instead
