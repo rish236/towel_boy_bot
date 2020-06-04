@@ -633,7 +633,7 @@ def main():
     @bot.command(pass_context=True, name='showfreeagents', help = 'Shows the current teams signed up for a specific tourney.')
     async def show_free_agents(ctx, *, message):
         conn = connect_db()
-        msg = ""
+        tourney_name = message
 
         with conn:
             cursor = conn.cursor()
