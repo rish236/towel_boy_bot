@@ -559,7 +559,7 @@ def main():
     @bot.command(pass_context=True, name='signupsolo', help = 'Signup for your team for open tourneys.')
     async def signup_solo(ctx, *, message ):
 
-        if message is None "":
+        if message is None:
             await ctx.send("You are missing required parameters. The correct parameters/order = **<tournament name>, <IGN>, <primary role>, <secondary role>, <solo/duo rank>**. \nPlease try again.")
             return
 
