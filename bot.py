@@ -633,28 +633,29 @@ def main():
     @bot.command(pass_context=True, name='showfreeagents', help = 'Shows the current teams signed up for a specific tourney.')
     async def show_free_agents(ctx, *, message):
         conn = connect_db()
-        tourney_name = message
+        msg = ""
 
         with conn:
             cursor = conn.cursor()
-            q = "SELECT ign from solo_signups WHERE tourney_name - '{}'".format(tourney_name.lstrip(' '))
-            cursor.execute(q)
-            igns = cursor.fetchall()
+            query = "SELECT ign FROM solo_signups WHERE tourney_name = '{}'".format(message)
+            cursor.execute(query)
+            players = cursor.fetchall()
 
-            print(igns)
+            print(players)
 
+            if players:
+                await ctx.send("Current solo players signed up for **{}**:".format(message))
+                for i in players:
+                    msg = msg + "\n" + i[0]
 
-            # query = "SELECT ign, primary_role, secondary_role, rank FROM solo_signups WHERE tourney_name = '{}'".format(message)
-            # cursor.execute(query)
-            # players = cursor.fetchall()
-            # if teams:
-            #     await ctx.send("Current teams signed up for **{}**:".format(message))
-            #     for i in teams:
-            #         msg = msg + "\n" + i[0]
+                await ctx.send(msg)
+            else:
+                await ctx.send("No solo players are currently signed up for **{}**.".format(message))
 
-            #     await ctx.send(msg)
-            # else:
-            #     await ctx.send("No teams are currently signed up for **{}**.".format(message)
+    @show_free_agents.error
+    async def show_free_agents_error(ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("You forgot to enter a tournament name. Please try again.")
 
 
 
