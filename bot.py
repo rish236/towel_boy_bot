@@ -575,7 +575,7 @@ def main():
         with conn:
             cursor = conn.cursor()
 
-            q = "CREATE TABLE IF NOT EXISTS solo_signups (disc_user VARCHAR(75), date VARCHAR(20), tourney_name VARCHAR(25), ign VARCHAR(75), primary_role VARCHAR(25), secondary_role (25), rank VARCHAR(25), picked TINYINT(1))"
+            q = "CREATE TABLE IF NOT EXISTS solo_signups (disc_user VARCHAR(75), date VARCHAR(20), tourney_name VARCHAR(25), ign VARCHAR(75), primary_role VARCHAR(25), secondary_role (25), rank VARCHAR(25), picked TINYINT(1), primary key(ign))"
             cursor.execute(q)
 
             query = "SELECT active FROM active_tourneys WHERE tourney_name = '{}'".format(tourney_name.lstrip(' '))
