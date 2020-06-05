@@ -381,7 +381,8 @@ def main():
 
                 except Exception as e:
                     print("error: " + error)
-                    
+                
+                print(f"{player1.lstrip(' ').lower()}, {player2.lstrip(' ').lower()}, {player3.lstrip(' ').lower()}, {player4.lstrip(' ').lower()}, {player5.lstrip(' ').lower()}")
 
 
                 if igns:
