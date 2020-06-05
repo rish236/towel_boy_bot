@@ -628,9 +628,7 @@ def main():
     async def show_free_agents(ctx, *, message):
         conn = connect_db()
         msg = ""
-        print("wtf why arent u working piece of shit")
-        player1 = trymybatsoup
-        await ctx.send("showfreeagents")
+        player1 = "trymybatsoup"
         with conn:
             # cursor = conn.cursor()
             # query = "SELECT ign, primary_role, secondary_role, rank FROM solo_signups WHERE tourney_name = '{}'".format(message)
