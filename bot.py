@@ -641,7 +641,7 @@ def main():
             cursor.execute(q)
             igns = cursor.fetchall()
 
-            print(igns)
+            print("igns: " + igns)
 
             if igns:
                 for _ in igns:
