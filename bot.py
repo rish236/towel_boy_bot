@@ -373,6 +373,28 @@ def main():
 
             if is_active ==1:
 
+                q = "SELECT ign from solo_signups WHERE tourney_name = '{}'".format(message.lstrip(' '))
+                try:
+                    cursor.execute(q)
+                    
+                    igns = cursor.fetchall()
+
+                except Exception as e:
+                    print("error: " + error)
+                    
+
+
+                if igns:
+                    for _ in igns:
+                        try:
+                            print(_[0].lower())
+                            if _[0] == player1.lstrip(' ').lower() or _[0] == player2.lstrip(' ').lower() or _[0] == player3.lstrip(' ').lower() or _[0] == player4.lstrip(' ').lower() or _[0] == player5.lstrip(' ').lower():
+                                q2 = "UPDATE solo_signups SET picked = 1 WHERE ign = '{}' and tourney_name = '{}'".format(_[0], tourney_name)
+                                cursor.execute(q2)
+                                print("found player")
+                        except:
+                            pass
+
          
 
                 query2 = "INSERT INTO teams (disc_user, date, team_name, player1, player2, player3, player4, player5, tourney_name) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
@@ -597,14 +619,13 @@ def main():
 
          
 
-                query2 = "INSERT INTO solo_signups (disc_user, date, ign, primary_role, secondary_role, rank, tourney_name) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+                query2 = "INSERT INTO solo_signups (disc_user, date, ign, primary_role, secondary_role, rank, tourney_name, picked) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
                 ts = time.time()
                 date_time = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
                 disc_user = str(ctx.message.author)
-                tup = (disc_user, date_time, ign.lstrip(' '), primary.lstrip(' '), secondary.lstrip(' '), rank.lstrip(' '), tourney_name.lstrip(' '))
+                tup = (disc_user, date_time, ign.lstrip(' '), primary.lstrip(' '), secondary.lstrip(' '), rank.lstrip(' '), tourney_name.lstrip(' '), 0)
 
 
-                #when we run multple tournaments at the same time, need to make it so team_name is not a primary key. need to validate that team_name and tourney_name are not the same instead
                 try:
                     cursor.execute(query2, tup)
 
@@ -628,50 +649,25 @@ def main():
     async def show_free_agents(ctx, *, message):
         conn = connect_db()
         msg = ""
-        player1 = "trymybatsoup"
         with conn:
             cursor = conn.cursor()
-            # query = "SELECT ign, primary_role, secondary_role, rank FROM solo_signups WHERE tourney_name = '{}'".format(message)
-            # cursor.execute(query)
-            # players = cursor.fetchall()
+            query = "SELECT ign, primary_role, secondary_role, rank FROM solo_signups WHERE tourney_name = '{}' and picked = 0".format(message)
+            cursor.execute(query)
+            players = cursor.fetchall()
 
-            # print(players)
-            print("wtf fucking work")
-            q = "SELECT ign from solo_signups WHERE tourney_name = '{}'".format(message.lstrip(' '))
-            print("past query")
-            try:
-                cursor.execute(q)
-                
-                igns = cursor.fetchall()
-                print("got igns")
-
-
-            except Exception as e:
-                print("error: " + error)
-                
-
-
-            if igns:
-                for _ in igns:
-
-                    try:
-                        print(_)
-                        print(_[0].lower())
-                        if _[0] == player1:
-                            print("found player")
-                    except:
-                        pass
+            print(players)
+            
 
                     
 
-            # if players:
-            #     await ctx.send("Current solo players signed up for **{}**:".format(message))
-            #     for i in players:
-            #         msg = msg + "\n" + "**IGN:** " + i[0] + " **Primary role:** " + i[1] + " **Secondary role:** " + i[2] + " **Rank:** " + i[3]
+            if players:
+                await ctx.send("Current solo players signed up for **{}**:".format(message))
+                for i in players:
+                    msg = msg  + "**IGN:** " + i[0] +  "\n" + "-----------------------" + "\n" +  "**Primary role:** " + i[1] + "\n" +  "**Secondary role:** " + i[2] + "\n" + "**Rank:** " + i[3] + "\n" + "-----------------------"
 
-            #     await ctx.send(msg)
-            # else:
-            #     await ctx.send("No solo players are currently signed up for **{}**.".format(message))
+                    await ctx.send(msg)
+            else:
+                await ctx.send("No solo players are currently signed up for **{}**.".format(message))
 
     @show_free_agents.error
     async def show_free_agents_error(ctx, error):
