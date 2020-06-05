@@ -352,7 +352,7 @@ def main():
 
             # q = "SELECT ign from solo_signups WHERE tourney_name - '{}'".format(tourney_name.lstrip(' '))
             # cursor.execute(q)
-            # igns = cursor.fetchall()[0]
+            # igns = cursor.fetchall()
 
             
 
@@ -642,6 +642,17 @@ def main():
             players = cursor.fetchall()
 
             print(players)
+
+            q = "SELECT ign from solo_signups WHERE tourney_name - '{}'".format(tourney_name.lstrip(' '))
+            cursor.execute(q)
+            igns = cursor.fetchall()
+
+            if igns:
+                for _ in igns:
+                    _ = _[0].lower()
+                    print(_)
+
+                    
 
             if players:
                 await ctx.send("Current solo players signed up for **{}**:".format(message))
