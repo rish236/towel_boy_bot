@@ -658,7 +658,7 @@ def main():
                     print(_)
                     print(type(_))
                     print(_.lower())
-                    if _ == player1:
+                    if _[0] == player1:
                         print("found player")
 
                     
