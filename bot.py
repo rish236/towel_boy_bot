@@ -636,11 +636,17 @@ def main():
             # players = cursor.fetchall()
 
             # print(players)
-            
+            print("wtf fucking work")
             q = "SELECT ign from solo_signups WHERE tourney_name = '{}'".format(message.lstrip(' '))
 
-            cursor.execute(q)
-            igns = cursor.fetchall()
+            try:
+                cursor.execute(q)
+                
+                igns = cursor.fetchall()
+            except Exception as e:
+                print("error")
+                print(e)
+                
 
             print("igns: " + igns)
 
