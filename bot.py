@@ -487,7 +487,7 @@ def main():
 
             if disc_user == current_disc_user or current_disc_user == "rish#3008" or current_disc_user == "TimeStoned#2677":
                 await ctx.send('''Here are the members of **{}**: \n1) {}\n2) {}\n3) {}\n4) {}\n5) {}\n\nPlease choose the number corresponding to the player you want to edit and enter the new IGN. For example: 1, newign. 
-                '''.format(message, player1, player2, player3, player4, player5))
+                '''.format(tourney_name, player1, player2, player3, player4, player5))
 
                 def check(m):
                     return m.author == ctx.author and m.channel == ctx.channel
@@ -495,7 +495,7 @@ def main():
 
                 try:
 
-                    msg = await bot.wait_for('message', check=check, timeout=30.0)
+                    msg = await bot.wait_for('message', check=check, timeout=60.0)
                     resp = msg.content.split(",")
                     
                 except asyncio.TimeoutError:
@@ -636,8 +636,9 @@ def main():
             # players = cursor.fetchall()
 
             # print(players)
-
+            
             q = "SELECT ign from solo_signups WHERE tourney_name = '{}'".format(message.lstrip(' '))
+
             cursor.execute(q)
             igns = cursor.fetchall()
 
