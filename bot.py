@@ -373,7 +373,7 @@ def main():
 
             if is_active ==1:
 
-                q = "SELECT ign from solo_signups WHERE tourney_name = '{}'".format(message.lstrip(' '))
+                q = "SELECT ign from solo_signups WHERE tourney_name = '{}'".format(tourney_name.lstrip(' '))
                 try:
                     cursor.execute(q)
                     
