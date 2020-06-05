@@ -666,6 +666,7 @@ def main():
                     msg = msg  + "**IGN:** " + i[0] +  "\n" + "-----------------------" + "\n" +  "**Primary role:** " + i[1] + "\n" +  "**Secondary role:** " + i[2] + "\n" + "**Rank:** " + i[3] + "\n" + "-----------------------"
 
                     await ctx.send(msg)
+                    msg = ""
             else:
                 await ctx.send("No solo players are currently signed up for **{}**.".format(message))
 
