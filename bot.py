@@ -636,17 +636,17 @@ def main():
         msg = ""
 
         with conn:
-            cursor = conn.cursor()
-            query = "SELECT ign, primary_role, secondary_role, rank FROM solo_signups WHERE tourney_name = '{}'".format(message)
-            cursor.execute(query)
-            players = cursor.fetchall()
+            # cursor = conn.cursor()
+            # query = "SELECT ign, primary_role, secondary_role, rank FROM solo_signups WHERE tourney_name = '{}'".format(message)
+            # cursor.execute(query)
+            # players = cursor.fetchall()
 
-            print(players)
+            # print(players)
 
             q = "SELECT ign from solo_signups WHERE tourney_name - '{}'".format(tourney_name.lstrip(' '))
             cursor.execute(q)
             igns = cursor.fetchall()
-            
+
 
             if igns:
                 for _ in igns:
@@ -655,14 +655,14 @@ def main():
 
                     
 
-            if players:
-                await ctx.send("Current solo players signed up for **{}**:".format(message))
-                for i in players:
-                    msg = msg + "\n" + "**IGN:** " + i[0] + " **Primary role:** " + i[1] + " **Secondary role:** " + i[2] + " **Rank:** " + i[3]
+            # if players:
+            #     await ctx.send("Current solo players signed up for **{}**:".format(message))
+            #     for i in players:
+            #         msg = msg + "\n" + "**IGN:** " + i[0] + " **Primary role:** " + i[1] + " **Secondary role:** " + i[2] + " **Rank:** " + i[3]
 
-                await ctx.send(msg)
-            else:
-                await ctx.send("No solo players are currently signed up for **{}**.".format(message))
+            #     await ctx.send(msg)
+            # else:
+            #     await ctx.send("No solo players are currently signed up for **{}**.".format(message))
 
     @show_free_agents.error
     async def show_free_agents_error(ctx, error):
