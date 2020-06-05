@@ -624,17 +624,11 @@ def main():
 
 
 
-
-
-
-
-
-
-    @bot.command(pass_context=True, name='showfreeagents', help = 'Shows the current teams signed up for a specific tourney.')
+    @bot.command(pass_context=True, name='showfreeagents', help = 'Shows the solo players signed up for a specific tourney.')
     async def show_free_agents(ctx, *, message):
         conn = connect_db()
         msg = ""
-
+        print("wtf why arent u working piece of shit")
         player1 = trymybatsoup
         await ctx.send("showfreeagents")
         with conn:
