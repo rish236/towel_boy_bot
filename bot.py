@@ -635,6 +635,7 @@ def main():
         conn = connect_db()
         msg = ""
 
+        player1 = trymybatsoup
         with conn:
             # cursor = conn.cursor()
             # query = "SELECT ign, primary_role, secondary_role, rank FROM solo_signups WHERE tourney_name = '{}'".format(message)
@@ -647,12 +648,15 @@ def main():
             cursor.execute(q)
             igns = cursor.fetchall()
 
+            print(igns)
 
             if igns:
                 for _ in igns:
                     print(_)
                     print(type(_))
                     print(_.lower())
+                    if _ == player1:
+                        print("found player")
 
                     
 
