@@ -636,6 +636,7 @@ def main():
         msg = ""
 
         player1 = trymybatsoup
+        await ctx.send("showfreeagents")
         with conn:
             # cursor = conn.cursor()
             # query = "SELECT ign, primary_role, secondary_role, rank FROM solo_signups WHERE tourney_name = '{}'".format(message)
