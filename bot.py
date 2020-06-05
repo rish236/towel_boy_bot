@@ -389,7 +389,7 @@ def main():
                     for _ in igns:
                         try:
                             print(_[0].lower())
-                            if _[0] == player1.lstrip(' ').lower() or _[0] == player2.lstrip(' ').lower() or _[0] == player3.lstrip(' ').lower() or _[0] == player4.lstrip(' ').lower() or _[0] == player5.lstrip(' ').lower():
+                            if _[0].lower() == player1.lstrip(' ').lower() or _[0].lower() == player2.lstrip(' ').lower() or _[0].lower() == player3.lstrip(' ').lower() or _[0].lower() == player4.lstrip(' ').lower() or _[0].lower() == player5.lstrip(' ').lower():
                                 q2 = "UPDATE solo_signups SET picked = 1 WHERE ign = '{}' and tourney_name = '{}'".format(_[0], tourney_name)
                                 cursor.execute(q2)
                                 print("found player")
