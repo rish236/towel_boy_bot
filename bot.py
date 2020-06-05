@@ -637,7 +637,7 @@ def main():
 
             # print(players)
 
-            q = "SELECT ign from solo_signups WHERE tourney_name - '{}'".format(message.lstrip(' '))
+            q = "SELECT ign from solo_signups WHERE tourney_name = '{}'".format(message.lstrip(' '))
             cursor.execute(q)
             igns = cursor.fetchall()
 
