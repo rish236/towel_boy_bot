@@ -630,7 +630,7 @@ def main():
         msg = ""
         player1 = "trymybatsoup"
         with conn:
-            # cursor = conn.cursor()
+            cursor = conn.cursor()
             # query = "SELECT ign, primary_role, secondary_role, rank FROM solo_signups WHERE tourney_name = '{}'".format(message)
             # cursor.execute(query)
             # players = cursor.fetchall()
