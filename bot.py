@@ -644,22 +644,23 @@ def main():
                 
                 igns = cursor.fetchall()
                 print("got igns")
-                print("igns: " + igns)
 
 
             except Exception as e:
-                print("error")
-                print(e)
+                print("error: " + error)
                 
 
 
             if igns:
                 for _ in igns:
-                    print(_)
-                    print(type(_))
-                    print(_.lower())
-                    if _[0] == player1:
-                        print("found player")
+
+                    try:
+                        print(_)
+                        print(_[0].lower())
+                        if _[0] == player1:
+                            print("found player")
+                    except:
+                        pass
 
                     
 
