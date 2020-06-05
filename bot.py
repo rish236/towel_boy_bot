@@ -650,8 +650,9 @@ def main():
 
             if igns:
                 for _ in igns:
-                    _ = _[0].lower()
                     print(_)
+                    print(type(_))
+                    print(_.lower())
 
                     
 
