@@ -644,12 +644,14 @@ def main():
                 
                 igns = cursor.fetchall()
                 print("got igns")
+                print("igns: " + igns)
+
+
             except Exception as e:
                 print("error")
                 print(e)
                 
 
-            print("igns: " + igns)
 
             if igns:
                 for _ in igns:
