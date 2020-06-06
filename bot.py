@@ -158,9 +158,6 @@ def main():
     
 
     @bot.command(pass_context=True, name='opggteam', help = 'Provides you with opgg links for players in a team.')
-    
-    
-    
     async def opgg_team(ctx, *, message):
         conn = connect_db()
         try:
@@ -185,6 +182,37 @@ def main():
 
         link = "https://na.op.gg/multi/query={}%2C{}%2C{}%2C{}%2C{}".format(player1, player2, player3, player4, player5) 
         await ctx.send("Here is the opgg for team **{}**:\n{}".format(team_name, link))
+
+
+    @bot.command(pass_context=True, name='opggteamall', help = 'Provides you with opgg links for players in a team.')
+    async def opgg_team_all(ctx, *, message):
+        conn = connect_db()
+        
+
+        with conn:
+            cursor = conn.cursor()
+            q = "SELECT team_name FROM teams WHERE tourney_name = '{}'".format(message)
+            cursor.execute(q)
+            teams = cursor.fetchall()
+            if teams:
+                
+                for i in teams:
+                    query = '''SELECT player1, player2, player3, player4, player5 FROM teams WHERE team_name = "{}" and tourney_name = "{}"'''.format(i[0], message.lstrip(' '))
+                    cursor.execute(query)
+                    rows = cursor.fetchall()
+
+                    player1 = rows[0][0].replace(" ", "")
+                    player2 = rows[0][1].replace(" ", "")
+                    player3 = rows[0][2].replace(" ", "")
+                    player4 = rows[0][3].replace(" ", "")
+                    player5 = rows[0][4].replace(" ", "")
+                    
+
+                    
+
+                    link = "https://na.op.gg/multi/query={}%2C{}%2C{}%2C{}%2C{}".format(player1, player2, player3, player4, player5) 
+                    await ctx.send("Here is the opgg for team **{}**:\n{}".format(i[0], link) + "\n")
+        cursor.close()
 
     @opgg_team.error
     async def opgg_team_error(ctx, error):
