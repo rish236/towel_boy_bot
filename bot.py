@@ -652,7 +652,7 @@ def main():
         msg = ""
         with conn:
             cursor = conn.cursor()
-            query = "SELECT ign, primary_role, secondary_role, rank FROM solo_signups WHERE tourney_name = '{}' and picked = 0".format(message)
+            query = "SELECT ign, primary_role, secondary_role, rank, disc_user FROM solo_signups WHERE tourney_name = '{}' and picked = 0".format(message)
             cursor.execute(query)
             players = cursor.fetchall()
 
@@ -664,7 +664,7 @@ def main():
             if players:
                 await ctx.send("Current solo players signed up for **{}**:".format(message))
                 for i in players:
-                    msg = msg  + "**IGN:** " + i[0] +  "\n" + "-----------------------" + "\n" +  "**Primary role:** " + i[1] + "\n" +  "**Secondary role:** " + i[2] + "\n" + "**Rank:** " + i[3] + "\n" + "-----------------------"
+                    msg = msg  + "**IGN:** " + i[0] +  "\n" + "-----------------------" + "\n" + "**Disc user:** " + i[4] + "\n" +  "**Primary role:** " + i[1] + "\n" +  "**Secondary role:** " + i[2] + "\n" + "**Rank:** " + i[3] + "\n" + "-----------------------"
 
                     await ctx.send(msg)
                     msg = ""
