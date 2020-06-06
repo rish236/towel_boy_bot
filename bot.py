@@ -557,28 +557,28 @@ def main():
                 resp[1] = resp[1].lstrip(' ')
                 print(resp[1])
                 if int(resp[0]) == 1:
-                    query = "UPDATE teams SET player1 = '{}' WHERE team_name = '{}'".format(resp[1], team_name)
+                    query = '''UPDATE teams SET player1 = "{}" WHERE team_name = "{}"'''.format(resp[1], team_name)
                     cursor.execute(query)
                     
                     await ctx.send("Successfully replaced **{}** with **{}**!".format(player1, resp[1]))
                     return
 
                 if int(resp[0]) == 2:
-                    query = "UPDATE teams SET player2 = '{}' WHERE team_name = '{}'".format(resp[1], team_name)
+                    query = '''UPDATE teams SET player2 = "{}" WHERE team_name = "{}"'''.format(resp[1], team_name)
                     cursor.execute(query)
 
                     await ctx.send("Successfully replaced **{}** with **{}**!".format(player2, resp[1]))
                     return
 
                 if int(resp[0]) == 3: 
-                    query = "UPDATE teams SET player3 = '{}' WHERE team_name = '{}'".format(resp[1], team_name)
+                    query = '''UPDATE teams SET player3 = '{}' WHERE team_name = "{}"'''.format(resp[1], team_name)
                     cursor.execute(query)
 
                     await ctx.send("Successfully replaced **{}** with **{}**!".format(player3, resp[1]))
                     return
 
                 if int(resp[0]) == 4:
-                    query = "UPDATE teams SET player4 = '{}' WHERE team_name = '{}'".format(resp[1], team_name)
+                    query = '''UPDATE teams SET player4 = "{}" WHERE team_name = "{}"'''.format(resp[1], team_name)
                     cursor.execute(query)
 
                     await ctx.send("Successfully replaced **{}** with **{}**!".format(player4, resp[1]))
@@ -586,7 +586,7 @@ def main():
 
                 
                 if int(resp[0]) == 5:
-                    query = "UPDATE teams SET player5 = '{}' WHERE team_name = '{}'".format(resp[1], team_name)
+                    query = '''UPDATE teams SET player5 = "{}" WHERE team_name = "{}"'''.format(resp[1], team_name)
                     cursor.execute(query)
 
                     await ctx.send("Successfully replaced **{}** with **{}**!".format(player5, resp[1]))
